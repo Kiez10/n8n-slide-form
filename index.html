@@ -1,167 +1,509 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tạo Slide Tự Động</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f9f9f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      margin: 0;
-      padding: 20px;
-    }
-    .container {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-      width: 100%;
-      max-width: 400px;
-    }
-    h1 {
-      text-align: center;
-      margin-bottom: 20px;
-      font-size: 22px;
-    }
-    .buttons {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-bottom: 15px;
-      flex-wrap: wrap;
-    }
-    .buttons button {
-      flex: 1;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      min-width: 120px;
-    }
-    .buttons button.active {
-      background-color: #007bff;
-      color: white;
-    }
-    .buttons button:not(.active) {
-      background-color: #ddd;
-    }
-    textarea, input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 15px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      box-sizing: border-box;
-    }
-    button.submit-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 10px;
-      border: none;
-      border-radius: 6px;
-      cursor: pointer;
-      font-size: 16px;
-      width: 100%;
-    }
-    .response-box {
-      margin-top: 15px;
-      background: #f1f1f1;
-      padding: 10px;
-      border-radius: 6px;
-      font-size: 14px;
-      word-wrap: break-word;
-    }
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 18px;
-      }
-      .buttons button {
-        font-size: 14px;
-        padding: 8px;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide Assistant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #e0c3fc 0%, #9bb5ff 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .avatar-section {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .avatar-text {
+            font-weight: 500;
+            color: #4a5568;
+            font-size: 0.95rem;
+        }
+
+        .dev-credit {
+            font-size: 0.85rem;
+            color: #6b7280;
+            font-weight: 400;
+        }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            margin-top: -2rem;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin-bottom: 2rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .logo::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 60px;
+            height: 60px;
+            background: radial-gradient(circle, #a8edea 0%, #fed6e3 100%);
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+
+        .logo::after {
+            content: '🎨';
+            position: absolute;
+            font-size: 2rem;
+            z-index: 1;
+        }
+
+        .title {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2d3748;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #718096;
+            margin-bottom: 3rem;
+            font-weight: 400;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            background: rgba(255, 255, 255, 0.3);
+            padding: 0.5rem;
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .tab {
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 0.95rem;
+            border: 2px solid transparent;
+            background: rgba(255, 255, 255, 0.2);
+            color: #4a5568;
+        }
+
+        .tab.active {
+            background: rgba(255, 255, 255, 0.8);
+            border-color: #9f7aea;
+            color: #553c9a;
+            box-shadow: 0 4px 15px rgba(159, 122, 234, 0.2);
+        }
+
+        .tab:hover:not(.active) {
+            background: rgba(255, 255, 255, 0.4);
+        }
+
+        .content-area {
+            width: 100%;
+            max-width: 600px;
+            margin-bottom: 3rem;
+        }
+
+        .upload-area {
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px dashed #cbd5e0;
+            border-radius: 20px;
+            padding: 3rem 2rem;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .upload-area:hover,
+        .upload-area.dragover {
+            border-color: #9f7aea;
+            background: rgba(255, 255, 255, 0.95);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 35px rgba(159, 122, 234, 0.1);
+        }
+
+        .upload-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #9f7aea;
+        }
+
+        .upload-text {
+            font-size: 1.1rem;
+            color: #4a5568;
+            margin-bottom: 1rem;
+            font-weight: 500;
+        }
+
+        .browse-btn {
+            background: #e2e8f0;
+            color: #4a5568;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .browse-btn:hover {
+            background: #cbd5e0;
+        }
+
+        .text-area {
+            width: 100%;
+            min-height: 200px;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #e2e8f0;
+            border-radius: 15px;
+            padding: 1.5rem;
+            font-size: 1rem;
+            font-family: inherit;
+            resize: vertical;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+
+        .text-area:focus {
+            outline: none;
+            border-color: #9f7aea;
+            box-shadow: 0 0 0 3px rgba(159, 122, 234, 0.1);
+        }
+
+        .text-area::placeholder {
+            color: #a0aec0;
+        }
+
+        .create-btn {
+            background: linear-gradient(135deg, #9f7aea 0%, #667eea 100%);
+            color: white;
+            border: none;
+            padding: 1rem 3rem;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(159, 122, 234, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .create-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .create-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(159, 122, 234, 0.4);
+        }
+
+        .create-btn:hover::before {
+            left: 100%;
+        }
+
+        .file-list {
+            margin-top: 1rem;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .file-item {
+            background: rgba(255, 255, 255, 0.8);
+            border-radius: 8px;
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .file-remove {
+            background: #fed7d7;
+            color: #c53030;
+            border: none;
+            border-radius: 4px;
+            padding: 0.25rem 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        .file-remove:hover {
+            background: #feb2b2;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .title {
+                font-size: 2.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .tabs {
+                flex-direction: column;
+                gap: 0.5rem;
+            }
+
+            .tab {
+                text-align: center;
+            }
+
+            .upload-area {
+                padding: 2rem 1rem;
+            }
+
+            .create-btn {
+                padding: 0.875rem 2rem;
+                font-size: 1rem;
+            }
+
+            .dev-credit {
+                font-size: 0.75rem;
+            }
+
+            .avatar-text {
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header {
+                flex-direction: column;
+                gap: 1rem;
+                text-align: center;
+            }
+
+            .title {
+                font-size: 2rem;
+            }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>Tạo Slide Tự Động</h1>
-    <div class="buttons">
-      <button type="button" id="btnImage" class="active">📷 Upload Ảnh</button>
-      <button type="button" id="btnText">✍️ Nhập Text</button>
+    <div class="container">
+        <div class="header">
+            <div class="avatar-section">
+                <div class="avatar">🐱</div>
+                <span class="avatar-text">Con mèo kêu quạc quạc</span>
+            </div>
+            <div class="dev-credit">developement by kiez</div>
+        </div>
+
+        <div class="main-content">
+            <div class="logo"></div>
+            
+            <h1 class="title">Slide assistant</h1>
+            <p class="subtitle">Everything automate!</p>
+
+            <div class="tabs">
+                <div class="tab active" data-tab="images">📸 import images</div>
+                <div class="tab" data-tab="texts">📝 free texts</div>
+            </div>
+
+            <div class="content-area">
+                <div id="images-content">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">⬆️</div>
+                        <div class="upload-text">Upload your images or drop here</div>
+                        <button class="browse-btn" onclick="document.getElementById('fileInput').click()">browse</button>
+                        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                    </div>
+                    <div class="file-list" id="fileList"></div>
+                </div>
+
+                <div id="texts-content" class="hidden">
+                    <textarea class="text-area" placeholder="Input text here..." id="textInput"></textarea>
+                </div>
+            </div>
+
+            <button class="create-btn">Create slide →</button>
+        </div>
     </div>
 
-    <form id="slideForm">
-      <div id="imageInput">
-        <input type="file" id="fileInput" name="data" accept="image/*">
-      </div>
-      <div id="textInput" style="display: none;">
-        <textarea id="textArea" name="text" rows="5" placeholder="Nhập nội dung..."></textarea>
-      </div>
-      <button type="submit" class="submit-btn">Gửi Yêu Cầu</button>
-    </form>
+    <script>
+        // Tab switching functionality
+        const tabs = document.querySelectorAll('.tab');
+        const imagesContent = document.getElementById('images-content');
+        const textsContent = document.getElementById('texts-content');
 
-    <div id="response" class="response-box" style="display:none;"></div>
-  </div>
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
 
-  <script>
-    const btnImage = document.getElementById('btnImage');
-    const btnText = document.getElementById('btnText');
-    const imageInput = document.getElementById('imageInput');
-    const textInput = document.getElementById('textInput');
-    const form = document.getElementById('slideForm');
-    const responseBox = document.getElementById('response');
-
-    let mode = 'image';
-
-    btnImage.addEventListener('click', () => {
-      mode = 'image';
-      btnImage.classList.add('active');
-      btnText.classList.remove('active');
-      imageInput.style.display = 'block';
-      textInput.style.display = 'none';
-    });
-
-    btnText.addEventListener('click', () => {
-      mode = 'text';
-      btnText.classList.add('active');
-      btnImage.classList.remove('active');
-      textInput.style.display = 'block';
-      imageInput.style.display = 'none';
-    });
-
-    form.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const formData = new FormData();
-      if (mode === 'text') {
-        formData.append('text', document.getElementById('textArea').value);
-      } else {
-        const file = document.getElementById('fileInput').files[0];
-        if (!file) {
-          alert('Vui lòng chọn ảnh!');
-          return;
-        }
-        formData.append('data', file);
-      }
-
-      try {
-        const res = await fetch('https://your-n8n-server/webhook/create-slide', {
-          method: 'POST',
-          body: formData
+                const tabType = tab.getAttribute('data-tab');
+                if (tabType === 'images') {
+                    imagesContent.classList.remove('hidden');
+                    textsContent.classList.add('hidden');
+                } else {
+                    imagesContent.classList.add('hidden');
+                    textsContent.classList.remove('hidden');
+                }
+            });
         });
-        const result = await res.json();
-        responseBox.style.display = 'block';
-        responseBox.textContent = `Trạng thái: ${result.status}\nPreview: ${result.preview}`;
-      } catch (error) {
-        responseBox.style.display = 'block';
-        responseBox.textContent = 'Lỗi kết nối đến server n8n!';
-      }
-    });
-  </script>
+
+        // File upload functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const fileList = document.getElementById('fileList');
+        let uploadedFiles = [];
+
+        // Drag and drop functionality
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles(files);
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            const files = Array.from(e.target.files);
+            handleFiles(files);
+        });
+
+        function handleFiles(files) {
+            files.forEach(file => {
+                if (file.type.startsWith('image/') && file.size <= 10 * 1024 * 1024) { // 10MB limit
+                    uploadedFiles.push(file);
+                    addFileToList(file);
+                } else if (!file.type.startsWith('image/')) {
+                    alert('Please select only image files.');
+                } else {
+                    alert('File size must be less than 10MB.');
+                }
+            });
+        }
+
+        function addFileToList(file) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'file-item';
+            fileItem.innerHTML = `
+                <span>${file.name} (${(file.size / 1024 / 1024).toFixed(2)} MB)</span>
+                <button class="file-remove" onclick="removeFile(this, '${file.name}')">Remove</button>
+            `;
+            fileList.appendChild(fileItem);
+        }
+
+        function removeFile(button, fileName) {
+            uploadedFiles = uploadedFiles.filter(file => file.name !== fileName);
+            button.parentElement.remove();
+        }
+
+        // Create slide button functionality
+        document.querySelector('.create-btn').addEventListener('click', () => {
+            const activeTab = document.querySelector('.tab.active').getAttribute('data-tab');
+            
+            if (activeTab === 'images') {
+                if (uploadedFiles.length > 0) {
+                    alert(`Creating slide with ${uploadedFiles.length} image(s)!`);
+                } else {
+                    alert('Please upload at least one image.');
+                }
+            } else {
+                const textContent = document.getElementById('textInput').value.trim();
+                if (textContent) {
+                    alert('Creating slide with your text content!');
+                } else {
+                    alert('Please enter some text content.');
+                }
+            }
+        });
+    </script>
 </body>
 </html>
