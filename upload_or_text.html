@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tạo Slide Tự Động</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f9f9f9;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .container {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      width: 100%;
+      max-width: 400px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 22px;
+    }
+    .buttons {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+    .buttons button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      min-width: 120px;
+    }
+    .buttons button.active {
+      background-color: #007bff;
+      color: white;
+    }
+    .buttons button:not(.active) {
+      background-color: #ddd;
+    }
+    textarea, input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      box-sizing: border-box;
+    }
+    button.submit-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+      width: 100%;
+    }
+    .response-box {
+      margin-top: 15px;
+      background: #f1f1f1;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 14px;
+      word-wrap: break-word;
+    }
+    @media (max-width: 480px) {
+      h1 {
+        font-size: 18px;
+      }
+      .buttons button {
+        font-size: 14px;
+        padding: 8px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Tạo Slide Tự Động</h1>
+    <div class="buttons">
+      <button type="button" id="btnImage" class="active">📷 Upload Ảnh</button>
+      <button type="button" id="btnText">✍️ Nhập Text</button>
+    </div>
+
+    <form id="slideForm">
+      <div id="imageInput">
+        <input type="file" id="fileInput" name="data" accept="image/*">
+      </div>
+      <div id="textInput" style="display: none;">
+        <textarea id="textArea" name="text" rows="5" placeholder="Nhập nội dung..."></textarea>
+      </div>
+      <button type="submit" class="submit-btn">Gửi Yêu Cầu</button>
+    </form>
+
+    <div id="response" class="response-box" style="display:none;"></div>
+  </div>
+
+  <script>
+    const btnImage = document.getElementById('btnImage');
+    const btnText = document.getElementById('btnText');
+    const imageInput = document.getElementById('imageInput');
+    const textInput = document.getElementById('textInput');
+    const form = document.getElementById('slideForm');
+    const responseBox = document.getElementById('response');
+
+    let mode = 'image';
+
+    btnImage.addEventListener('click', () => {
+      mode = 'image';
+      btnImage.classList.add('active');
+      btnText.classList.remove('active');
+      imageInput.style.display = 'block';
+      textInput.style.display = 'none';
+    });
+
+    btnText.addEventListener('click', () => {
+      mode = 'text';
+      btnText.classList.add('active');
+      btnImage.classList.remove('active');
+      textInput.style.display = 'block';
+      imageInput.style.display = 'none';
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const formData = new FormData();
+      if (mode === 'text') {
+        formData.append('text', document.getElementById('textArea').value);
+      } else {
+        const file = document.getElementById('fileInput').files[0];
+        if (!file) {
+          alert('Vui lòng chọn ảnh!');
+          return;
+        }
+        formData.append('data', file);
+      }
+
+      try {
+        const res = await fetch('https://your-n8n-server/webhook/create-slide', {
+          method: 'POST',
+          body: formData
+        });
+        const result = await res.json();
+        responseBox.style.display = 'block';
+        responseBox.textContent = `Trạng thái: ${result.status}\nPreview: ${result.preview}`;
+      } catch (error) {
+        responseBox.style.display = 'block';
+        responseBox.textContent = 'Lỗi kết nối đến server n8n!';
+      }
+    });
+  </script>
+</body>
+</html>
